@@ -1,851 +1,304 @@
-<!DOCTYPE html>
-<html lang="az" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chai Studio — Peşəkar Kreativ Mütəxəssislər Bazarı</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        bgPrimary: '#09090B',
-                        bgSecondary: '#121218',
-                        cardBg: '#18181F',
-                        primaryPurple: '#8B5CF6',
-                        accentPurple: '#A855F7',
-                        textMain: '#FFFFFF',
-                        textSecondary: '#B5B5C6',
-                        borderColor: 'rgba(255, 255, 255, 0.08)',
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'purple-glow': '0 0 50px -10px rgba(139, 92, 246, 0.3)',
-                        'purple-glow-lg': '0 0 100px -20px rgba(139, 92, 246, 0.4)',
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                    }
-                }
-            }
+"use client";
+
+import { useState, useEffect } from "react";
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import StatsSection from "@/components/StatsSection";
+import ServicesSection from "@/components/ServicesSection";
+import FeaturedExpertsSection, { ExpertData } from "@/components/FeaturedExpertsSection";
+import AiSmartMatchSection from "@/components/AiSmartMatchSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import ProjectTrackingSection from "@/components/ProjectTrackingSection";
+import BuiltInChatSection from "@/components/BuiltInChatSection";
+import SecurePaymentSection from "@/components/SecurePaymentSection";
+import RevisionPolicySection from "@/components/RevisionPolicySection";
+import WhyChooseSection from "@/components/WhyChooseSection";
+import CustomerReviewsSection from "@/components/CustomerReviewsSection";
+import CorporatePanelSection from "@/components/CorporatePanelSection";
+import PromotionsSection from "@/components/PromotionsSection";
+import MobileAppSection from "@/components/MobileAppSection";
+import RoadmapSection from "@/components/RoadmapSection";
+import FaqSection from "@/components/FaqSection";
+import FinalCtaSection from "@/components/FinalCtaSection";
+import Footer from "@/components/Footer";
+import ProjectBriefModal from "@/components/ProjectBriefModal";
+import ExpertModal from "@/components/ExpertModal";
+
+const fallbackExperts: ExpertData[] = [
+  {
+    id: 1,
+    name: "Nicat Əliyev",
+    role: "Senior UI/UX & Məhsul Dizayneri",
+    category: "UI/UX Dizayn",
+    rating: "4.99",
+    reviewCount: 184,
+    completedProjects: 240,
+    experience: "8 il təcrübə",
+    hourlyRate: 85,
+    startingPrice: 650,
+    deliveryDays: 3,
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Figma", "Design Systems", "Prototyping", "Fintech UI", "SaaS"]),
+    bio: "Fintech, SaaS və e-ticarət platformaları üçün beynəlxalq səviyyəli UI/UX dizayn sistemləri hazırlayıram. 200-dən çox uğurlu layihə.",
+    portfolioPreview: JSON.stringify(["BirBank Redesign", "FinCloud SaaS UI", "NeoPay Mobile"]),
+  },
+  {
+    id: 2,
+    name: "Leyla Məmmədova",
+    role: "Kreativ Brendinq Direktoru",
+    category: "Brendinq",
+    rating: "5.00",
+    reviewCount: 142,
+    completedProjects: 195,
+    experience: "7 il təcrübə",
+    hourlyRate: 90,
+    startingPrice: 800,
+    deliveryDays: 4,
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Brand Strategy", "Brandbook", "Typography", "Visual Identity", "Packaging"]),
+    bio: "Şirkətlərin fəlsəfəsini premium və unikal vizual kimliyə çevirirəm. Lüks brendinq və korporativ stil üzrə ixtisaslaşmışam.",
+    portfolioPreview: JSON.stringify(["Aura Lüks Parfüm", "Caspian Heights", "Köz Gourmet"]),
+  },
+  {
+    id: 3,
+    name: "Teymur Qasımov",
+    role: "3D & 2D Motion Dizayner",
+    category: "Motion Dizayn",
+    rating: "4.97",
+    reviewCount: 119,
+    completedProjects: 160,
+    experience: "6 il təcrübə",
+    hourlyRate: 75,
+    startingPrice: 450,
+    deliveryDays: 3,
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["After Effects", "Blender 3D", "Cinema 4D", "Logo Motion", "Explainer Videos"]),
+    bio: "Məhsulunuzu hərəkətə gətirən dinamik 3D və 2D animasiyalar. Reklam və məhsul təqdimatları üçün yüksək keyfiyyətli animasiya.",
+    portfolioPreview: JSON.stringify(["CryptoPay 3D Reel", "CyberShield Intro", "Vortex Launch"]),
+  },
+  {
+    id: 4,
+    name: "Aygün Rüstəmova",
+    role: "SMM & Vizual Kontent Direktoru",
+    category: "SMM",
+    rating: "4.96",
+    reviewCount: 205,
+    completedProjects: 310,
+    experience: "5 il təcrübə",
+    hourlyRate: 55,
+    startingPrice: 350,
+    deliveryDays: 2,
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Instagram Grid", "Reels Strategy", "Content Plan", "Copywriting", "Meta Ads"]),
+    bio: "Brendinizin sosial mediada diqqət çəkməsi üçün vizual estetika və yüksək baxış gətirən viral kontent strategiyası qururam.",
+    portfolioPreview: JSON.stringify(["CoffeeLab Baku SMM", "SilkRoad Media", "UrbanStyle Hub"]),
+  },
+  {
+    id: 5,
+    name: "Rəşad Kərimov",
+    role: "Senior Video Redaktor & Colorist",
+    category: "Video Montaj",
+    rating: "4.98",
+    reviewCount: 167,
+    completedProjects: 220,
+    experience: "9 il təcrübə",
+    hourlyRate: 70,
+    startingPrice: 400,
+    deliveryDays: 2,
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Premiere Pro", "DaVinci Resolve", "Sound Design", "Color Grading", "Commercials"]),
+    bio: "Kinematoqrafik rəng korreksiyası, dinamik saund dizayn və reklam video montajı üzrə 9 illik beynəlxalq təcrübə.",
+    portfolioPreview: JSON.stringify(["Formula 1 Baku Promo", "TechSummit Video", "Porsche Reel"]),
+  },
+  {
+    id: 6,
+    name: "Nərgiz Babayeva",
+    role: "Senior Qrafik Dizayner",
+    category: "Qrafik Dizayn",
+    rating: "4.95",
+    reviewCount: 230,
+    completedProjects: 340,
+    experience: "6 il təcrübə",
+    hourlyRate: 50,
+    startingPrice: 250,
+    deliveryDays: 2,
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Illustrator", "Photoshop", "Packaging Design", "Vector Art", "Print Media"]),
+    bio: "Minimalist loqo, qablaşdırma və promo materiallar. Hər bir vizual detalları ilə diqqət çəkən kreativ qrafik həllər.",
+    portfolioPreview: JSON.stringify(["Organica Çay Qutusu", "Baku Jazz Poster", "Artisanal Coffee"]),
+  },
+  {
+    id: 7,
+    name: "Fərid İsmayılov",
+    role: "Mobiloqraf & Məhsul Fotoqrafı",
+    category: "Mobiloqrafiya",
+    rating: "4.94",
+    reviewCount: 98,
+    completedProjects: 145,
+    experience: "4 il təcrübə",
+    hourlyRate: 60,
+    startingPrice: 300,
+    deliveryDays: 2,
+    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["iPhone 16 Pro Max 4K", "Product Shoot", "Food Shoot", "Reels Production", "Lightroom"]),
+    bio: "Restoranlar, e-ticarət məhsulları və fərdi brendlər üçün premium mobiloqrafik çəkiliş və operativ montaj.",
+    portfolioPreview: JSON.stringify(["Entrée Baku Reels", "Jewel Lux Foto", "Fitness Bar Promo"]),
+  },
+  {
+    id: 8,
+    name: "Səbinə Əhmədova",
+    role: "Performans Reklam & Kreativ Strateg",
+    category: "Reklam",
+    rating: "4.99",
+    reviewCount: 154,
+    completedProjects: 210,
+    experience: "7 il təcrübə",
+    hourlyRate: 80,
+    startingPrice: 500,
+    deliveryDays: 3,
+    avatar: "https://images.unsplash.com/photo-1534751516642-a171edd2521d?w=400&auto=format&fit=crop&q=80",
+    isVerified: true,
+    isTopExpert: true,
+    skills: JSON.stringify(["Meta Ads", "Google Display", "Conversion Copy", "A/B Test Banners", "ROAS Analytics"]),
+    bio: "Satış gətirən reklam bannerləri və yüksək konversiyalı vizual kreativlər. 5X+ ROAS hədəfli marketinq dizaynı.",
+    portfolioPreview: JSON.stringify(["Black Friday Meta Ads", "SaaS Funnel Ads", "AutoStore Campaign"]),
+  },
+];
+
+export default function Home() {
+  const [experts, setExperts] = useState<ExpertData[]>(fallbackExperts);
+  const [briefModalOpen, setBriefModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("UI/UX Dizayn");
+  const [selectedExpertId, setSelectedExpertId] = useState<number | undefined>(undefined);
+  const [activeExpertModal, setActiveExpertModal] = useState<ExpertData | null>(null);
+
+  useEffect(() => {
+    fetch("/api/experts")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.experts && data.experts.length > 0) {
+          setExperts(data.experts);
         }
-    </script>
-    <style>
-        body {
-            background-color: #09090B;
-            color: #FFFFFF;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-        .glass-panel {
-            background: rgba(24, 24, 31, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-nav {
-            background: rgba(9, 9, 11, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #FFFFFF 30%, #A855F7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .purple-gradient-bg {
-            background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #09090B;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #18181F;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8B5CF6;
-        }
-    </style>
-</head>
-<body class="bg-bgPrimary text-textMain antialiased selection:bg-primaryPurple selection:text-white" x-data="{ mobileMenuOpen: false, activeTab: 'chat' }">
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
-    <!-- Sticky Navigation -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo -->
-            <a href="#" class="flex items-center gap-2 group">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primaryPurple to-accentPurple flex items-center justify-center shadow-purple-glow group-hover:scale-105 transition-transform duration-300">
-                    <span class="font-extrabold text-xl tracking-wider">C</span>
-                </div>
-                <span class="font-bold text-xl tracking-tight">Chai Studio</span>
-            </a>
+  const handleOpenBrief = (category?: string, expertId?: number) => {
+    if (category) setSelectedCategory(category);
+    if (expertId) setSelectedExpertId(expertId);
+    setBriefModalOpen(true);
+  };
 
-            <!-- Desktop Nav Links -->
-            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-textSecondary">
-                <a href="#ana-sehife" class="hover:text-white transition-colors">Ana Səhifə</a>
-                <a href="#xidmetler" class="hover:text-white transition-colors">Xidmətlər</a>
-                <a href="#mutexessisler" class="hover:text-white transition-colors">Mütəxəssislər</a>
-                <a href="#nece-isleyir" class="hover:text-white transition-colors">Necə işləyir</a>
-                <a href="#haqqimizda" class="hover:text-white transition-colors">Haqqımızda</a>
-                <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
-                <a href="#elaqe" class="hover:text-white transition-colors">Əlaqə</a>
-            </nav>
+  const handleScrollToExperts = () => {
+    const el = document.getElementById("experts");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
-            <!-- CTA Button -->
-            <div class="hidden sm:flex items-center gap-4">
-                <a href="#layihe-yarat" class="relative group overflow-hidden rounded-xl p-[1px] focus:outline-none">
-                    <span class="absolute inset-0 bg-gradient-to-r from-primaryPurple to-accentPurple rounded-xl transition-all duration-300 group-hover:opacity-90"></span>
-                    <span class="relative px-5 py-2.5 bg-bgPrimary rounded-xl flex items-center gap-2 text-sm font-semibold transition-all duration-300 group-hover:bg-opacity-0">
-                        Layihəyə Başla
-                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round5" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </span>
-                </a>
-            </div>
+  const handleHireExpert = (exp: ExpertData) => {
+    setSelectedCategory(exp.category);
+    setSelectedExpertId(exp.id);
+    setBriefModalOpen(true);
+  };
 
-            <!-- Mobile Menu Toggle -->
-            <button @click="mobileMenuOpen = !mobileNumOpen" class="lg:hidden p-2 rounded-xl glass-panel text-textSecondary hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-        </div>
-    </header>
+  return (
+    <main className="min-h-screen bg-[#09090B] text-white selection:bg-purple-600 selection:text-white">
+      {/* Sticky Navigation */}
+      <Navbar onOpenBriefModal={handleOpenBrief} />
 
-    <!-- Hero Section -->
-    <section id="ana-sehife" class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden purple-gradient-bg">
-        <!-- Glow background element -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-primaryPurple opacity-20 blur-[120px] rounded-full pointer-events-none"></div>
+      {/* Hero Section with Floating SaaS Dashboard */}
+      <HeroSection
+        onOpenBriefModal={() => handleOpenBrief()}
+        onScrollToExperts={handleScrollToExperts}
+      />
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Left Content -->
-                <div class="lg:col-span-6 space-y-8 text-center lg:text-left">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel text-xs font-semibold text-accentPurple shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-primaryPurple animate-pulse"></span>
-                        Yeni Nəsil Kreativ Bazar
-                    </div>
+      {/* Statistics & Partner Brands Ticker */}
+      <StatsSection />
 
-                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
-                        Layihəniz üçün peşəkar <span class="gradient-text">kreativ mütəxəssis</span> tapın.
-                    </h1>
+      {/* Services Grid (8 categories) */}
+      <ServicesSection
+        onSelectService={(cat) => handleOpenBrief(cat)}
+      />
 
-                    <p class="text-lg text-textSecondary max-w-xl mx-auto lg:mx-0">
-                        Chai Studio biznesinizi yoxlamadan keçmiş aparıcı dizaynerlər, marketoloqlar və kreativ ekspertlərlə birləşdirən lüks rəqəmsal platformadır. Təhlükəsiz iş prosesi və zəmanətli nəticə.
-                    </p>
+      {/* Featured Verified Experts */}
+      <FeaturedExpertsSection
+        experts={experts}
+        onOpenExpertModal={(exp) => setActiveExpertModal(exp)}
+        onHireExpert={handleHireExpert}
+      />
 
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <a href="#layihe-yarat" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-primaryPurple to-accentPurple text-white font-semibold shadow-purple-glow hover:opacity-95 transition-all text-center">
-                            Layihəyə Başla
-                        </a>
-                        <a href="#mutexessisler" class="w-full sm:w-auto px-8 py-4 rounded-xl glass-panel text-white font-semibold hover:bg-cardBg transition-all text-center">
-                            Mütəxəssislərə Bax
-                        </a>
-                    </div>
+      {/* AI Smart Match Playground */}
+      <AiSmartMatchSection onHireExpert={handleHireExpert} />
 
-                    <!-- Trust indicators -->
-                    <div class="pt-4 flex items-center justify-center lg:justify-start gap-6 text-textSecondary text-sm">
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-primaryPurple" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-                            <span>100% Təhlükəsiz Ödəniş</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-primaryPurple" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-                            <span>Verified Ekspertlər</span>
-                        </div>
-                    </div>
-                </div>
+      {/* How It Works (10 Steps Visual Timeline) */}
+      <HowItWorksSection onOpenBriefModal={() => handleOpenBrief()} />
 
-                <!-- Right Side: 3D SaaS Dashboard Mockup -->
-                <div class="lg:col-span-6 animate-float">
-                    <div class="glass-panel rounded-3xl p-6 shadow-purple-glow-lg border border-white/10 relative overflow-hidden">
-                        <!-- Dashboard Header -->
-                        <div class="flex items-center justify-between pb-6 border-b border-borderColor">
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                                <span class="text-xs text-textSecondary font-mono ml-2">chaistudio.io/workspace</span>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-md bg-primaryPurple/20 text-accentPurple text-xs font-semibold">Live Panel</span>
-                        </div>
+      {/* Interactive Project Tracking Dashboard */}
+      <ProjectTrackingSection />
 
-                        <!-- Dashboard Content Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                            <!-- Project Timeline Widget -->
-                            <div class="bg-cardBg rounded-2xl p-4 border border-borderColor">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs text-textSecondary font-medium">Layihə Qrafiki</span>
-                                    <span class="text-xs font-bold text-accentPurple">85% Tamamlandı</span>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between text-xs">
-                                        <span>UI/UX Dizayn</span>
-                                        <span class="text-green-400 font-semibold">Bitdi</span>
-                                    </div>
-                                    <div class="w-full bg-bgPrimary rounded-full h-2">
-                                        <div class="bg-gradient-to-r from-primaryPurple to-accentPurple h-2 rounded-full w-4/5"></div>
-                                    </div>
-                                </div>
-                            </div>
+      {/* Built-in Chat & Voice Notes Messenger Simulation */}
+      <BuiltInChatSection />
 
-                            <!-- Payments Widget -->
-                            <div class="bg-cardBg rounded-2xl p-4 border border-borderColor">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-xs text-textSecondary font-medium">Escrow Balans</span>
-                                    <span class="px-2 py-0.5 rounded bg-green-500/20 text-green-400 text-[10px] font-bold">Qorunur</span>
-                                </div>
-                                <div class="text-2xl font-extrabold tracking-tight">$4,850.00</div>
-                                <p class="text-[11px] text-textSecondary mt-1">Təsdiqdən sonra sərbəst buraxılacaq</p>
-                            </div>
-                        </div>
+      {/* Secure Payment / Escrow Breakdown (70/30 Split) */}
+      <SecurePaymentSection />
 
-                        <!-- Messages Preview -->
-                        <div class="mt-4 bg-cardBg rounded-2xl p-4 border border-borderColor">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center font-bold text-xs">EL</div>
-                                    <div>
-                                        <div class="text-xs font-bold">Elmir Qasımov</div>
-                                        <div class="text-[10px] text-textSecondary">Senior UI/UX Dizayner</div>
-                                    </div>
-                                </div>
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                            </div>
-                            <p class="text-xs text-textSecondary bg-bgPrimary p-3 rounded-xl border border-borderColor">
-                                "Salam! İlk dizayn konsepsiyasını göndərdim, zəhmət olmasa nəzərdən keçirin."
-                            </p>
-                        </div>
+      {/* Revision Policy Guarantee */}
+      <RevisionPolicySection />
 
-                        <!-- Expert Cards Mini -->
-                        <div class="mt-4 grid grid-cols-3 gap-3">
-                            <div class="bg-cardBg p-3 rounded-xl text-center border border-borderColor">
-                                <div class="w-10 h-10 mx-auto rounded-full bg-purple-500/20 mb-1 flex items-center justify-center font-bold text-accentPurple">GD</div>
-                                <div class="text-[11px] font-bold truncate">Qrafik Dizayn</div>
-                                <div class="text-[10px] text-textSecondary">450+ Ekspert</div>
-                            </div>
-                            <div class="bg-cardBg p-3 rounded-xl text-center border border-borderColor">
-                                <div class="w-10 h-10 mx-auto rounded-full bg-blue-500/20 mb-1 flex items-center justify-center font-bold text-blue-400">BR</div>
-                                <div class="text-[11px] font-bold truncate">Brendinq</div>
-                                <div class="text-[10px] text-textSecondary">320+ Ekspert</div>
-                            </div>
-                            <div class="bg-cardBg p-3 rounded-xl text-center border border-borderColor">
-                                <div class="w-10 h-10 mx-auto rounded-full bg-pink-500/20 mb-1 flex items-center justify-center font-bold text-pink-400">SM</div>
-                                <div class="text-[11px] font-bold truncate">SMM</div>
-                                <div class="text-[10px] text-textSecondary">610+ Ekspert</div>
-                            </div>
-                        </div>
+      {/* Why Choose Chai Studio (8 Bento Grid) */}
+      <WhyChooseSection />
 
-                    </div>
-                </div>
+      {/* Customer Reviews & Testimonials */}
+      <CustomerReviewsSection />
 
-            </div>
-        </div>
-    </section>
+      {/* Corporate B2B Dashboard */}
+      <CorporatePanelSection />
 
-    <!-- Statistics Section -->
-    <section class="py-16 bg-bgSecondary border-y border-borderColor">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-                <div class="p-6 rounded-2xl glass-panel">
-                    <div class="text-3xl sm:text-5xl font-extrabold gradient-text mb-2">10,000+</div>
-                    <div class="text-sm text-textSecondary font-medium">Tamamlanan Layihə</div>
-                </div>
-                <div class="p-6 rounded-2xl glass-panel">
-                    <div class="text-3xl sm:text-5xl font-extrabold gradient-text mb-2">2,500+</div>
-                    <div class="text-sm text-textSecondary font-medium">Peşəkar Mütəxəssis</div>
-                </div>
-                <div class="p-6 rounded-2xl glass-panel">
-                    <div class="text-3xl sm:text-5xl font-extrabold gradient-text mb-2">98%</div>
-                    <div class="text-sm text-textSecondary font-medium">Müştəri Məmnuniyyəti</div>
-                </div>
-                <div class="p-6 rounded-2xl glass-panel">
-                    <div class="text-3xl sm:text-5xl font-extrabold gradient-text mb-2">24 Saat</div>
-                    <div class="text-sm text-textSecondary font-medium">Orta Cavab Müddəti</div>
-                </div>
-            </div>
-        </div>
-    </section>
+      {/* Promotions & Copyable Promo Code */}
+      <PromotionsSection />
 
-    <!-- Services Section -->
-    <section id="xidmetler" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">Xidmətlər</h2>
-                <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Biznesiniz üçün hər sahədə <span class="gradient-text">peşəkar dəstək</span></h3>
-                <p class="text-textSecondary">Şirkətinizi növbəti səviyyəyə qaldıracaq istedadlı mütəxəssislər qrupu.</p>
-            </div>
+      {/* Mobile App (Titanium iPhone Mockup) */}
+      <MobileAppSection />
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Service 1 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Qrafik Dizayn</h4>
-                    <p class="text-textSecondary text-sm mb-6">Brendinizin vizual kimliyini gücləndirən yaradıcı və unikal qrafik həllər.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
+      {/* Future Roadmap */}
+      <RoadmapSection />
 
-                <!-- Service 2 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Brendinq</h4>
-                    <p class="text-textSecondary text-sm mb-6">Logo, brend kitabçası və bazarda fərqlənən unikal korporativ üslub.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
+      {/* FAQ Accordion */}
+      <FaqSection />
 
-                <!-- Service 3 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">SMM</h4>
-                    <p class="text-textSecondary text-sm mb-6">Sosial media strategiyası, kontent planı və auditoriyanızı cəlb edən paylaşımlar.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
+      {/* Final Luxury CTA */}
+      <FinalCtaSection onOpenBriefModal={() => handleOpenBrief()} />
 
-                <!-- Service 4 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Video Montaj</h4>
-                    <p class="text-textSecondary text-sm mb-6">Peşəkar səviyyədө reklam çarxları, YouTube videoları və Reels/TikTok montajı.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
+      {/* Footer */}
+      <Footer />
 
-                <!-- Service 5 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.56M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">Motion Dizayn</h4>
-                    <p class="text-textSecondary text-sm mb-6">Animasiyalı loqolar, izahatverici videolar və dinamik vizual effektlər.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
+      {/* Interactive Project Brief Modal */}
+      <ProjectBriefModal
+        isOpen={briefModalOpen}
+        onClose={() => setBriefModalOpen(false)}
+        defaultCategory={selectedCategory}
+        expertId={selectedExpertId}
+      />
 
-                <!-- Service 6 -->
-                <div class="group p-8 rounded-3xl bg-cardBg border border-borderColor hover:border-primaryPurple transition-all duration-300 hover:shadow-purple-glow">
-                    <div class="w-14 h-14 rounded-2xl bg-primaryPurple/10 flex items-center justify-center text-primaryPurple mb-6 group-hover:bg-primaryPurple group-hover:text-white transition-all">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h4 class="text-xl font-bold mb-2">UI/UX Dizayn</h4>
-                    <p class="text-textSecondary text-sm mb-6">Veb-saytlar və mobil tətbiqlər üçün müasir, istifadəçi dostu interfeys dizaynı.</p>
-                    <a href="#layihe-yarat" class="inline-flex items-center gap-2 text-sm font-semibold text-accentPurple group-hover:translate-x-1 transition-transform">
-                        Sifariş et <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Experts Section -->
-    <section id="mutexessisler" class="py-24 bg-bgSecondary border-y border-borderColor">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-                <div>
-                    <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">Mütəxəssislər</h2>
-                    <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Seçilmiş <span class="gradient-text">Top Ekspertlər</span></h3>
-                </div>
-                <p class="text-textSecondary max-w-md mt-4 md:mt-0">Platformamızın ən yüksək reytinqli və təcrübəli yaradıcı peşəkarları ilə tanış olun.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Expert 1 -->
-                <div class="bg-cardBg rounded-3xl p-6 border border-borderColor hover:border-primaryPurple transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="relative">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center font-bold text-xl text-white">EQ</div>
-                            <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-cardBg rounded-full"></span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-lg">Elmir Qasımov</h4>
-                                <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">Verified</span>
-                            </div>
-                            <p class="text-xs text-textSecondary">Senior UI/UX Dizayner</p>
-                            <div class="flex items-center gap-1 mt-1 text-yellow-400 text-xs font-semibold">
-                                ★ 4.9 <span class="text-textSecondary font-normal">(120+ layihə)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-borderColor text-sm mb-6">
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Təcrübə:</span>
-                            <span class="font-semibold">7+ il</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Qiymət (Saatlıq):</span>
-                            <span class="font-semibold">$45 / saat</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Çatdırılma:</span>
-                            <span class="font-semibold">2-4 gün</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <a href="#layihe-yarat" class="flex-1 py-3 rounded-xl bg-primaryPurple text-white font-semibold text-center text-sm hover:opacity-90 transition-all">Əlaqə saxla</a>
-                        <button class="px-4 py-3 rounded-xl glass-panel text-textSecondary hover:text-white transition-all text-sm font-semibold">Portfoli</button>
-                    </div>
-                </div>
-
-                <!-- Expert 2 -->
-                <div class="bg-cardBg rounded-3xl p-6 border border-borderColor hover:border-primaryPurple transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="relative">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-pink-600 to-purple-600 flex items-center justify-center font-bold text-xl text-white">LN</div>
-                            <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-cardBg rounded-full"></span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-lg">Leyla Məmmədova</h4>
-                                <span class="px-2 py-0.5 rounded bg-purple-500/20 text-accentPurple text-[10px] font-bold">Top Expert</span>
-                            </div>
-                            <p class="text-xs text-textSecondary">Brendinq & Qrafik Dizayner</p>
-                            <div class="flex items-center gap-1 mt-1 text-yellow-400 text-xs font-semibold">
-                                ★ 5.0 <span class="text-textSecondary font-normal">(95+ layihə)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-borderColor text-sm mb-6">
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Təcrübə:</span>
-                            <span class="font-semibold">6+ il</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Qiymət (Saatlıq):</span>
-                            <span class="font-semibold">$50 / saat</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Çatdırılma:</span>
-                            <span class="font-semibold">1-3 gün</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <a href="#layihe-yarat" class="flex-1 py-3 rounded-xl bg-primaryPurple text-white font-semibold text-center text-sm hover:opacity-90 transition-all">Əlaqə saxla</a>
-                        <button class="px-4 py-3 rounded-xl glass-panel text-textSecondary hover:text-white transition-all text-sm font-semibold">Portfoli</button>
-                    </div>
-                </div>
-
-                <!-- Expert 3 -->
-                <div class="bg-cardBg rounded-3xl p-6 border border-borderColor hover:border-primaryPurple transition-all duration-300">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="relative">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-600 flex items-center justify-center font-bold text-xl text-white">OR</div>
-                            <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-cardBg rounded-full"></span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-lg">Orxan Rzayev</h4>
-                                <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">Verified</span>
-                            </div>
-                            <p class="text-xs text-textSecondary">Motion Dizayner & Video Montaj</p>
-                            <div class="flex items-center gap-1 mt-1 text-yellow-400 text-xs font-semibold">
-                                ★ 4.9 <span class="text-textSecondary font-normal">(150+ layihə)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-3 pt-4 border-t border-borderColor text-sm mb-6">
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Təcrübə:</span>
-                            <span class="font-semibold">8+ il</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Qiymət (Saatlıq):</span>
-                            <span class="font-semibold">$60 / saat</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-textSecondary">Çatdırılma:</span>
-                            <span class="font-semibold">3-5 gün</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <a href="#layihe-yarat" class="flex-1 py-3 rounded-xl bg-primaryPurple text-white font-semibold text-center text-sm hover:opacity-90 transition-all">Əlaqə saxla</a>
-                        <button class="px-4 py-3 rounded-xl glass-panel text-textSecondary hover:text-white transition-all text-sm font-semibold">Portfoli</code-button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- AI Smart Match Section -->
-    <section class="py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-primaryPurple/10 to-transparent pointer-events-none"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="glass-panel rounded-3xl p-8 sm:p-16 border border-borderColor shadow-purple-glow-lg text-center max-w-4xl mx-auto">
-                <span class="px-3 py-1 rounded-full bg-primaryPurple/20 text-accentPurple text-xs font-bold inline-block mb-4">AI Smart Match</span>
-                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-6">Süni İntellekt ilə <span class="gradient-text">mükəmməl ekspert</span> seçimi</h2>
-                <p class="text-textSecondary text-base sm:text-lg max-w-2xl mx-auto mb-8">
-                    Layihə brifinizi daxil edin, bizim qabaqcıl AI alqoritmimiz sizin tələblərinizə və büdcənizə ən uyğun peşəkarı saniyələr ərzində müəyyənləşdirsin.
-                </p>
-                <a href="#layihe-yarat" class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-primaryPurple to-accentPurple text-white font-bold shadow-purple-glow hover:opacity-95 transition-all text-lg">
-                    <span>Mənim üçün mütəxəssis tap</span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="nece-isleyir" class="py-24 bg-bgSecondary border-y border-borderColor">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">Addım-addım proses</h2>
-                <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Chai Studio necə <span class="gradient-text">işləyir?</span></h3>
-                <p class="text-textSecondary">Layihənizin yaradılmasından son ödənişə qədər şəffaf və təhlükəsiz mərhələlər.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <!-- Step 1 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">01</span>
-                    <h4 class="font-bold text-base mb-2">Xidmət seç</h4>
-                    <p class="text-textSecondary text-xs">Ehtiyacınız olan kreativ xidmət kateqoriyasını seçin.</p>
-                </div>
-                <!-- Step 2 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">02</span>
-                    <h4 class="font-bold text-base mb-2">Mütəxəssis seç</h4>
-                    <p class="text-textSecondary text-xs">AI tövsiyəsi ilə və ya özünüz uyğun eksperti seçin.</p>
-                </div>
-                <!-- Step 3 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">03</span>
-                    <h4 class="font-bold text-base mb-2">Brif doldur</h4>
-                    <p class="text-textSecondary text-xs">Layihə tələblərini və detalları ətraflı qeyd edin.</p>
-                </div>
-                <!-- Step 4 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">04</span>
-                    <h4 class="font-bold text-base mb-2">Beh ödə</h4>
-                    <p class="text-textSecondary text-xs">Məbləğ təhlükəsiz escrow hesabında qorunur.</p>
-                </div>
-                <!-- Step 5 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">05</span>
-                    <h4 class="font-bold text-base mb-2">Layihə başlayır</h4>
-                    <p class="text-textSecondary text-xs">Ekspert işə başlayır və statusu izləyirsiniz.</p>
-                </div>
-                <!-- Step 6 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">06</span>
-                    <h4 class="font-bold text-base mb-2">Statusu izləyin</h4>
-                    <p class="text-textSecondary text-xs">Canlı panel üzərindən bütün mərhələləri izləyin.</p>
-                </div>
-                <!-- Step 7 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">07</span>
-                    <h4 class="font-bold text-base mb-2">İlk versiyanı qəbul edin</h4>
-                    <p class="text-textSecondary text-xs">İlkin nəticəni nəzərdən keçirin.</p>
-                </div>
-                <!-- Step 8 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">08</span>
-                    <h4 class="font-bold text-base mb-2">Düzəliş göndərin</h4>
-                    <p class="text-textSecondary text-xs">Lazım gələrsə dəyişikliklər tələb edin.</p>
-                </div>
-                <!-- Step 9 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">09</span>
-                    <h4 class="font-bold text-base mb-2">Təsdiqləyin</h4>
-                    <p class="text-textSecondary text-xs">Nəticədən tam razı qaldıqda işi təsdiqləyin.</p>
-                </div>
-                <!-- Step 10 -->
-                <div class="bg-cardBg p-6 rounded-2xl border border-borderColor relative">
-                    <span class="absolute top-4 right-4 text-2xl font-black text-primaryPurple/30">10</span>
-                    <h4 class="font-bold text-base mb-2">Son ödəniş</h4>
-                    <p class="text-textSecondary text-xs">Məbləğ avtomatik olaraq mütəxəssisə köçürülür.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project Tracking & Built-in Chat Section -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Left: Interactive Tracking Statuses -->
-                <div>
-                    <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">İnteraktiv İdarəetmə</h2>
-                    <h3 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-6">Layihənizi addım-addım <span class="gradient-text">izləyin</span></h3>
-                    <p class="text-textSecondary mb-8">Hər bir layihə dəqiq status izləmə sistemi ilə tənzimlənir. Sürprizlərə yer yoxdur.</p>
-
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-cardBg border border-primaryPurple">
-                            <div class="w-8 h-8 rounded-full bg-primaryPurple flex items-center justify-center text-white text-xs font-bold">✓</div>
-                            <div>
-                                <h4 class="font-bold text-sm">Beh Ödənildi & Sifariş Qəbul Edildi</h4>
-                                <p class="text-xs text-textSecondary">Vəsait təhlükəsiz hesaba köçürüldü</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-cardBg border border-primaryPurple">
-                            <div class="w-8 h-8 rounded-full bg-primaryPurple flex items-center justify-center text-white text-xs font-bold animate-pulse">●</div>
-                            <div>
-                                <h4 class="font-bold text-sm">İş Hazırlanır & İlk Versiya</h4>
-                                <p class="text-xs text-textSecondary">Mütəxəssis dizayn üzərində işləyir</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-cardBg border border-borderColor opacity-60">
-                            <div class="w-8 h-8 rounded-full bg-bgPrimary border border-borderColor flex items-center justify-center text-textSecondary text-xs font-bold">○</div>
-                            <div>
-                                <h4 class="font-bold text-sm">Düzəliş & Təhvil Verildi</h4>
-                                <p class="text-xs text-textSecondary">Son təsdiq və yekun ödəniş</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Built-in Chat Mockup -->
-                <div class="glass-panel rounded-3xl p-6 border border-borderColor shadow-purple-glow">
-                    <div class="flex items-center justify-between pb-4 border-b border-borderColor mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center font-bold text-accentPurple">LN</div>
-                            <div>
-                                <h4 class="font-bold text-sm">Leyla Məmmədova</h4>
-                                <div class="flex items-center gap-1 text-[10px] text-green-400">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                    <span>Online</span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="text-xs text-textSecondary">Söhbət #8492</span>
-                    </div>
-
-                    <!-- Chat Messages -->
-                    <div class="space-y-4 mb-6 h-64 overflow-y-auto pr-2">
-                        <div class="flex gap-3">
-                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex-shrink-0 flex items-center justify-center text-xs font-bold text-accentPurple">LN</div>
-                            <div class="bg-cardBg p-3 rounded-2xl border border-borderColor text-xs max-w-xs">
-                                Salam! Yeni brend konsepsiyası üçün PDF faylı hazırladım. Zəhmət olmasa baxın.
-                            </div>
-                        </div>
-                        <div class="flex gap-3 justify-end">
-                            <div class="bg-primaryPurple text-white p-3 rounded-2xl text-xs max-w-xs">
-                                Çox sağ olun, baxıram indi!
-                            </div>
-                        </div>
-                        <div class="flex gap-3">
-                            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex-shrink-0 flex items-center justify-center text-xs font-bold text-accentPurple">LN</div>
-                            <div class="bg-cardBg p-3 rounded-2xl border border-borderColor text-xs flex items-center gap-2">
-                                <svg class="w-5 h-5 text-accentPurple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                <span>Brand_Guidelines_v1.pdf (4.2 MB)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Input -->
-                    <div class="flex items-center gap-2 bg-cardBg p-2 rounded-xl border border-borderColor">
-                        <input type="text" placeholder="Mesaj yazın..." class="bg-transparent border-none text-xs flex-1 px-3 py-2 text-white focus:outline-none">
-                        <button class="p-2 rounded-lg bg-primaryPurple text-white hover:opacity-90 transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Secure Payment & Revenue Split -->
-    <section class="py-24 bg-bgSecondary border-y border-borderColor">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">Təhlükəsizlik</h2>
-                <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Etibarlı <span class="gradient-text">Escrow Ödəniş</span> Sistemi</h3>
-                <p class="text-textSecondary">Vəsaitiniz siz layihəni tam təsdiq edənə qədər təhlükəsiz bank hesabında qorunur.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div class="bg-cardBg p-8 rounded-3xl border border-borderColor text-center">
-                    <div class="text-5xl font-black gradient-text mb-4">70%</div>
-                    <h4 class="text-xl font-bold mb-2">Mütəxəssis Payı</h4>
-                    <p class="text-textSecondary text-sm">Layihə uğurla təhvil verildikdən dərhal sonra mütəxəssisə köçürülür.</p>
-                </div>
-                <div class="bg-cardBg p-8 rounded-3xl border border-borderColor text-center">
-                    <div class="text-5xl font-black gradient-text mb-4">30%</div>
-                    <h4 class="text-xl font-bold mb-2">Chai Studio Xidmət Haqqı</h4>
-                    <p class="text-textSecondary text-sm">Platformanın təhlükəsizliyi, 24/7 dəstək və escrow xidmətlərini əhatə edir.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Revision Policy & Why Choose Us -->
-    <section class="py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">Üstünlüklərimiz</h2>
-                <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Niyə məhz <span class="gradient-text">Chai Studio?</span></h3>
-                <p class="text-textSecondary">Bizimlə işləməyin üstünlükləri və şəffaf qaydalar.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-cardBg p-6 rounded-3xl border border-borderColor">
-                    <h4 class="font-bold text-lg mb-2">Verified Experts</h4>
-                    <p class="text-textSecondary text-sm">Bütün mütəxəssislər ciddi yoxlamadan keçir.</p>
-                </div>
-                <div class="bg-cardBg p-6 rounded-3xl border border-borderColor">
-                    <h4 class="font-bold text-lg mb-2">Limitsiz Düzəliş</h4>
-                    <p class="text-textSecondary text-sm">Orijinal brif çərçivəsində istədiyiniz qədər dəyişiklik.</p>
-                </div>
-                <div class="bg-cardBg p-6 rounded-3xl border border-borderColor">
-                    <h4 class="font-bold text-lg mb-2">AI Matching</h4>
-                    <p class="text-textSecondary text-sm">Süni intellekt ilə dəqiq ekspert seçimi.</p>
-                </div>
-                <div class="bg-cardBg p-6 rounded-3xl border border-borderColor">
-                    <h4 class="font-bold text-lg mb-2">Qorunan İş Prosesi</h4>
-                    <p class="text-textSecondary text-sm">Escrow sistemi ilə hər iki tərəf üçün tam təminat.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="py-24 bg-bgSecondary border-y border-borderColor" x-data="{ openFaq: null }">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-xs font-semibold text-accentPurple uppercase tracking-widest mb-3">FAQ</h2>
-                <h3 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Tez-tez verilən <span class="gradient-text">suallar</span></h3>
-                <p class="text-textSecondary">Platformamız və iş prosesi haqqında bilmək istədikləriniz.</p>
-            </div>
-
-            <div class="space-y-4">
-                <!-- FAQ Item 1 -->
-                <div class="bg-cardBg rounded-2xl border border-borderColor overflow-hidden">
-                    <button @click="openFaq === 1 ? openFaq = null : openFaq = 1" class="w-full p-6 text-left font-bold flex justify-between items-center">
-                        <span>Ödənişlər necə həyata keçirilir?</span>
-                        <svg class="w-5 h-5 transition-transform" :class="openFaq === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div x-show="openFaq === 1" class="px-6 pb-6 text-textSecondary text-sm">
-                        Ödənişlər təhlükəsiz escrow sistemi vasitəsilə həyata keçirilir. Siz beh ödəyirsiniz, vəsait iş təsdiqlənənə qədər qorunur və yekunda mütəxəssisə köçürülür.
-                    </div>
-                </div>
-
-                <!-- FAQ Item 2 -->
-                <div class="bg-cardBg rounded-2xl border border-borderColor overflow-hidden">
-                    <button @click="openFaq === 2 ? openFaq = null : openFaq = 2" class="w-full p-6 text-left font-bold flex justify-between items-center">
-                        <span>Düzəlişlər necə tənzimlənir?</span>
-                        <svg class="w-5 h-5 transition-transform" :class="openFaq === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div x-show="openFaq === 2" class="px-6 pb-6 text-textSecondary text-sm">
-                        Orijinal brif tələbləri daxilində istədiyiniz qədər düzəlişlər pulsuz həyata keçirilir. Tamamilə yeni konsepsiyalar isə ayrıca sifariş tələb edir.
-                    </div>
-                </div>
-
-                <!-- FAQ Item 3 -->
-                <div class="bg-cardBg rounded-2xl border border-borderColor overflow-hidden">
-                    <button @click="openFaq === 3 ? openFaq = null : openFaq = 3" class="w-full p-6 text-left font-bold flex justify-between items-center">
-                        <span>Mütəxəssislər necə seçilir?</span>
-                        <svg class="w-5 h-5 transition-transform" :class="openFaq === 3 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div x-show="openFaq === 3" class="px-6 pb-6 text-textSecondary text-sm">
-                        Bütün ekspertlər portfoli yoxlaması, müsahibə və peşəkar test mərhələlərindən keçərək "Verified" statusu qazanırlar.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA Section -->
-    <section id="layihe-yarat" class="py-24 relative overflow-hidden purple-gradient-bg">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div class="glass-panel rounded-3xl p-12 sm:p-16 border border-borderColor shadow-purple-glow-lg">
-                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-6">Biznesinizi növbəti səviyyəyə qaldırın</h2>
-                <p class="text-textSecondary text-lg max-w-2xl mx-auto mb-8">
-                    İlk layihənizi bu gün yaradın və peşəkar kreativ ekspertlərlə işləməyə başlayın.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#" class="px-8 py-4 rounded-xl bg-gradient-to-r from-primaryPurple to-accentPurple text-white font-bold shadow-purple-glow hover:opacity-95 transition-all text-base">
-                        İlk Layihənizi Başladın
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="elaqe" class="bg-bgSecondary border-t border-borderColor pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
-                <div class="col-span-2">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-primaryPurple to-accentPurple flex items-center justify-center font-bold text-white">C</div>
-                        <span class="font-bold text-lg">Chai Studio</span>
-                    </div>
-                    <p class="text-textSecondary text-xs max-w-xs mb-4">
-                        Biznesləri peşəkar kreativ mütəxəssislərlə birləşdirən lüks rəqəmsal bazar.
-                    </p>
-                    <div class="text-xs text-textSecondary">© 2026 Chai Studio. Bütün hüquqlar qorunur.</div>
-                </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">Şirkət</h4>
-                    <ul class="space-y-2 text-xs text-textSecondary">
-                        <li><a href="#haqqimizda" class="hover:text-white transition-colors">Haqqımızda</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Vakansiyalar</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Bloq</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">Xidmətlər</h4>
-                    <ul class="space-y-2 text-xs text-textSecondary">
-                        <li><a href="#xidmetler" class="hover:text-white transition-colors">Qrafik Dizayn</a></li>
-                        <li><a href="#xidmetler" class="hover:text-white transition-colors">Brendinq</a></li>
-                        <li><a href="#xidmetler" class="hover:text-white transition-colors">UI/UX Dizayn</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">Yardım</h4>
-                    <ul class="space-y-2 text-xs text-textSecondary">
-                        <li><a href="#faq" class="hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Dəstək</a></li>
-                        <li><a href="#elaqe" class="hover:text-white transition-colors">Əlaqə</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-sm mb-4">Məxfilik</h4>
-                    <ul class="space-y-2 text-xs text-textSecondary">
-                        <li><a href="#" class="hover:text-white transition-colors">Məxfilik Siyasəti</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">İstifadə Şərtləri</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-</body>
-</html>
+      {/* Interactive Expert Detail Modal */}
+      <ExpertModal
+        expert={activeExpertModal}
+        onClose={() => setActiveExpertModal(null)}
+        onHire={handleHireExpert}
+      />
+    </main>
+  );
+}
